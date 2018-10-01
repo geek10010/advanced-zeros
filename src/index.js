@@ -1,11 +1,21 @@
 module.exports = function getZerosCount(number, base) {
-  const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31,
-    37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101,
-    103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163,
-    167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229,
-    233, 239, 241, 251];
+  const findPrimes = (num) => {
+    const numberSet = [...Array(num + 1).keys()];
 
-  const basePrimes = primes.filter(prime => base % prime === 0);
+    for (let i = 2; i < num; i += 1) {
+      if (numberSet[i]) {
+        for (let j = i ** 2; j <= num; j += i) {
+          if (numberSet[j]) {
+            numberSet[j] = 0;
+          }
+        }
+      }
+    }
+
+    return numberSet.filter(value => value > 1 && num % value === 0);
+  };
+
+  const basePrimes = findPrimes(base);
 
   const basePrimesCount = basePrimes.map((prime) => {
     let power = 0;
@@ -19,8 +29,8 @@ module.exports = function getZerosCount(number, base) {
     return [prime, power];
   });
 
-  const primesInFactorial = basePrimesCount.map((element) => {
-    const [prime, power] = element;
+  const primesInFactorial = basePrimesCount.map((primeWithPower) => {
+    const [prime, power] = primeWithPower;
     let counter = 0;
 
     for (let i = 1; prime ** i <= number; i += 1) {
